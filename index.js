@@ -13,7 +13,7 @@ const server = http.createServer((req, res) => {
     const serverTime = formatNigerianTime();
     const html = `
       <div style="font-family: monospace; line-height: 1.6; font-weight: bold; font-size: 16px;">
-        <p>✅ [VSPPM] Server is running.</p>
+        <p>&#9989 [VSPPM] Server is running.</p>
         <p><strong>Server Time (Nigerian):</strong> ${serverTime}</p>
         <p><strong>Daily Schedule for OG-Scrap:</strong></p>
         <ul>
