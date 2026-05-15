@@ -1,7 +1,8 @@
 const cron = require("node-cron");
 
-const {scrap_predoc} = require("./scrapers/predoc/predoc-main.js")
-const {get_jobs_ac_data} = require("./scrapers/jobs-ac/jobs-ac-main.js")
+const {scrap_predoc} = require("./scrapers/predoc/predoc-main.js");
+const {get_jobs_ac_data} = require("./scrapers/jobs-ac/jobs-ac-main.js");
+const {academy} = require("./scrapers/academy-pos/academy-main.js");
 const { getNigerianTime, formatNigerianTime } = require("./utils/dateHelpers.js");
 const http = require("http");
 // --- Core Application Logic ---
@@ -35,7 +36,7 @@ const server = http.createServer((req, res) => {
 // --- Cron Jobs Setup ---
 async function setupCronJobs() {
   // 4:00 AM - First scrap of the day
-  cron.schedule('0 4 * * *', async () => {
+  cron.schedule('0 3 * * *', async () => {
     console.log('🌅 3:00 AM - Scraping new jobs - predoc..');
     await scrap_predoc(); process.exit(1);
   }, {
@@ -52,9 +53,18 @@ async function setupCronJobs() {
     timezone: "Africa/Lagos"
   });
 
+  cron.schedule('0 14 * * *', async () => {
+    console.log('🌅 2:00 PM - Scraping new jobs - academy-main..');
+    await academy(); process.exit(1);
+  }, {
+    scheduled: true,
+    timezone: "Africa/Lagos"
+  });
+
   console.log('📅 Daily Schedule:');
   console.log('   - 4:00 AM: First scrap');
   console.log('   - 10:00 AM: Second scrap');
+  console.log('   - 2:00 PM: Third scrap');
 
 }
 

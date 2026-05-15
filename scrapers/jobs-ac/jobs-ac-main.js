@@ -151,6 +151,7 @@ async function extractPostDetails (postLink, page) {
 
 };
 
+
 async function scrapeAllPages(startUrl, maxPages = 8) {
 
 try {
