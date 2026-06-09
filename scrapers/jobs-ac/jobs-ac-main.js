@@ -6,7 +6,7 @@ const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker')
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 const UserAgent = require("user-agents");
 const { formatDateForDB } = require('../../utils/dateHelpers.js');
-const { storePosts, initializeDatabase,
+const { storePosts, checkPostsCount, initializeDatabase,
   closeDatabase } = require('./jobs-ac-db.js');
 
 {/**UTILITIES START */}
@@ -250,7 +250,7 @@ try {
 
     console.log(`\n🎉 Extraction complete!`);
     console.log(`Total posts collected: ${postsDetailsArr.length}`);
-
+    await checkPostsCount();
     //console.log(postsDetailsArr)
     //console.log(`Posts with future deadlines: ${postsDetailsArr.length}`);
 

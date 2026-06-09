@@ -122,7 +122,34 @@ async function storePosts(postsArr) {
       attempted: posts.length,
     };
   }
-}
+};
+
+async function checkPostsCount() {
+  try {
+    // Get collection from the shared 'db' instance
+    let sa_Collection = db.collection("sft-posts");
+
+    // Use estimatedDocumentCount for better performance on large collections
+    let count = await sa_Collection.estimatedDocumentCount();
+
+    if(count > 10000) {
+      console.log(`🗑️ Posted-Jobs collection has ~${count} documents. Deleting...`);
+
+      let result = await sa_Collection.deleteMany({}, {
+        writeConcern: { w: 1, j: false }
+      });
+
+      console.log(`✅ Deleted ${result.deletedCount} documents from Posted-Jobs.`);
+      sa_Collection = null;
+    } else {
+      console.log (`Documents are within the target count threshold (10,000 docs)\ncurrent count: `, count)
+    }
+
+  } catch (error) {
+    console.error("⛔ Error managing Posted-Jobs collection:", error.message);
+    process.exit(1);
+  }
+};
 
 
 
@@ -130,5 +157,6 @@ async function storePosts(postsArr) {
 module.exports = {
   initializeDatabase,
   closeDatabase,
-  storePosts
+  storePosts,
+  checkPostsCount
 };

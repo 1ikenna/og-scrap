@@ -3,12 +3,13 @@ const cron = require("node-cron");
 const {base_scraper} = require("./scrapers/scholarships-future/sft-main.js");
 const {sa_base_scraper} = require("./scrapers/scholarships-aid/sa-main.js");
 const {get_jobs_ac_data} = require("./scrapers/jobs-ac/jobs-ac-main.js");
+const {scrap_predoc} = require("./scrapers/predoc/predoc-main.js");
 const {academy} = require("./scrapers/academy-pos/academy-main.js");
 const { getNigerianTime, formatNigerianTime } = require("./utils/dateHelpers.js");
 const http = require("http");
 // --- Core Application Logic ---
 
-
+let isJobRunning = false;
 // --- HTTP Server for Health Checks ---
 const server = http.createServer((req, res) => {
   if (req.url === '/' && req.method === 'GET') {
@@ -34,12 +35,25 @@ const server = http.createServer((req, res) => {
   }
 });
 
+async function runWithLock(fn, label) {
+  if (isJobRunning) {
+      console.log(`⚠️ Skipping ${label} — another job is still running.`);
+      return;
+  }
+  isJobRunning = true;
+  try {
+      await fn();
+  } finally {
+      isJobRunning = false;
+  }
+};
+
 // --- Cron Jobs Setup ---
 async function setupCronJobs() {
   // 4:00 AM - First scrap of the day
   cron.schedule('0 3 * * *', async () => {
     console.log('🌅 3:00 AM - Scraping new scholar posts from scholarships-future..');
-    await base_scraper(); process.exit(1);
+    await runWithLock(base_scraper, 'base_scraper'); process.exit(1);
   }, {
     scheduled: true,
     timezone: "Africa/Lagos"
@@ -48,7 +62,7 @@ async function setupCronJobs() {
   //// 10:00 AM - Second scrap of the day
   cron.schedule('0 10 * * *', async () => {
     console.log('🌅 10:00 AM - Scraping new scholar posts from jbs-ac..');
-    await get_jobs_ac_data(); process.exit(1);
+    await runWithLock(get_jobs_ac_data, 'get_jobs_ac_data'); process.exit(1);
   }, {
     scheduled: true,
     timezone: "Africa/Lagos"
@@ -56,7 +70,7 @@ async function setupCronJobs() {
 
   cron.schedule('0 14 * * *', async () => {
     console.log('🌅 2:00 PM - Scraping new scholar posts from academy-main..');
-    await academy(); process.exit(1);
+    await runWithLock(academy, 'academy'); process.exit(1);
   }, {
     scheduled: true,
     timezone: "Africa/Lagos"
@@ -64,7 +78,15 @@ async function setupCronJobs() {
 
   cron.schedule('0 18 * * *', async () => {
     console.log('🌅 6:00 PM - Scraping new scholar posts from scholar-aid..');
-    await sa_base_scraper(); process.exit(1);
+    await runWithLock(sa_base_scraper, 'sa_base_scraper');  process.exit(1);
+  }, {
+    scheduled: true,
+    timezone: "Africa/Lagos"
+  });
+
+  cron.schedule('0 22 * * *', async () => {
+    console.log('🌅 10:00 PM - Scraping new scholar posts from scholar-aid..');
+    await runWithLock(scrap_predoc, 'scrap_predoc');  process.exit(1);
   }, {
     scheduled: true,
     timezone: "Africa/Lagos"

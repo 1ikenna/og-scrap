@@ -5,7 +5,7 @@ const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker');
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
 const UserAgent = require("user-agents");
 const { formatDateForDB } = require('../../utils/dateHelpers.js');
-const { storePosts, initializeDatabase,
+const { storePosts, checkPostsCount, initializeDatabase,
     closeDatabase } = require('./predoc-db.js');
 
 function parseDeadline(deadlineText) {
@@ -250,6 +250,7 @@ async function scrap_predoc() {
 
   try {
         await initializeDatabase();
+        await checkPostsCount();
         let result = await storePosts(posts);
         if (result && result.success && result.inserted > 0) {console.log(`successfully stored ${result.inserted} posts ..\nDetails: `, result)} else {console.log(`No new documents available to insert at this time..`, result)};
         await closeDatabase();

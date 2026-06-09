@@ -7,7 +7,7 @@ const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker')
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 const UserAgent = require("user-agents");
 const { formatDateForDB } = require('../../utils/dateHelpers.js');
-const { storePosts, initializeDatabase,
+const { storePosts, checkPostsCount, initializeDatabase,
   closeDatabase } = require('./sft-db.js');
 
 
@@ -132,6 +132,7 @@ async function sft_scrap (startUrl, maxPages = 10) {
       } else {
         console.log(`📌 No more pages or reached max pages (${maxPages})`);
         console.log(`total docs extracted: ${ttLinks.length}\nadding to db..`);
+        await checkPostsCount();
         let result = await storePosts(ttLinks);
         if (result && result.success && result.inserted) {console.log(`successfully stored posts ..${result.inserted}\nDetails: \n`, result)} else {console.log('No new documents available to insert at this time..', result)};
         break;

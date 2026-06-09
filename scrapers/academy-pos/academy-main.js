@@ -7,7 +7,7 @@ const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker')
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 const UserAgent = require("user-agents");
 const { formatDateForDB } = require('../../utils/dateHelpers.js');
-const { storePosts, initializeDatabase,
+const { storePosts, checkPostsCount, initializeDatabase,
   closeDatabase } = require('./academy-db.js');
 
 function isValidDeadline(dateString) {
@@ -260,6 +260,7 @@ async function scrapeAllPages (startUrl, maxPages = 16) {
 
       console.log(`✅ Total valid posts after filtering: ${postsDetailsArr.length}`);
       //console.log(postsDetailsArr); //send batch to DB here;
+      await checkPostsCount();
       let result = await storePosts(postsDetailsArr);
       if (result && result.success && result.inserted) {console.log(`successfully stored posts ..${result.inserted}\nDetails: \n`, result)} else {console.log('No new documents available to insert at this time..', result)};
       /*console.log("proceeding to find next page link..")
