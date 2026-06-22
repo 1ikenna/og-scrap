@@ -15,7 +15,7 @@ async function sa_base_scraper () {
   try {
     await initializeDatabase();
     const baseUrl = "https://scholarshipsandaid.org/category/scholarships/";
-    await sa_scrap(baseUrl, 1);
+    await sa_scrap(baseUrl, 4);
     await closeDatabase();
   } catch (error) {
     console.error(error.message)
@@ -239,51 +239,61 @@ async function extractLinkDetails(links, page) {
 };
 
 function isFutureDate(dateString) {
-    // Regular expression to match format: "MMMM DD, YYYY"
-    // Examples: "July 15, 2026", "October 6, 2026", "September 1, 2026"
-    const datePattern = /^([A-Za-z]+)\s+(\d{1,2}),\s+(\d{4})$/;
-    const match = dateString.match(datePattern);
+  // Pattern 1: Month Day, Year (e.g., September 1, 2026 or September 1st, 2026)
+  const patternMDY = /^([A-Za-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?,\s+(\d{4})$/i;
 
-    if (!match) {
-        console.log("invalid date format: ", dateString)
-        return false; // Invalid format
+  // Pattern 2: Day Month, Year (e.g., 1 September, 2026 or 1st September, 2026)
+  const patternDMY = /^(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+),\s+(\d{4})$/i;
+
+  let match = dateString.match(patternMDY);
+  let monthName, day, year;
+
+  if (match) {
+    monthName = match[1];
+    day = parseInt(match[2], 10);
+    year = parseInt(match[3], 10);
+  } else {
+    // If it fails the first format, try the second format
+    match = dateString.match(patternDMY);
+    if (match) {
+      day = parseInt(match[1], 10);
+      monthName = match[2];
+      year = parseInt(match[3], 10);
+    } else {
+      console.log("invalid date format: ", dateString);
+      return false;
     }
+  }
 
-    const monthName = match[1];
-    const day = parseInt(match[2], 10);
-    const year = parseInt(match[3], 10);
+  // Capitalize first letter to match the keys in your months object cleanly
+  monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1).toLowerCase();
 
-    // Map month names to numbers (0-11 for JavaScript Date)
-    const months = {
-        'January': 0, 'February': 1, 'March': 2, 'April': 3,
-        'May': 4, 'June': 5, 'July': 6, 'August': 7,
-        'September': 8, 'October': 9, 'November': 10, 'December': 11
-    };
+  const months = {
+      'January': 0, 'February': 1, 'March': 2, 'April': 3,
+      'May': 4, 'June': 5, 'July': 6, 'August': 7,
+      'September': 8, 'October': 9, 'November': 10, 'December': 11
+  };
 
-    const month = months[monthName];
+  const month = months[monthName];
 
-    // Check if month name is valid
-    if (month === undefined) {
-        return false;
-    }
+  if (month === undefined) {
+      console.log("Unknown month name: ", monthName);
+      return false;
+  }
 
-    // Create date object (note: month is 0-indexed)
-    const inputDate = new Date(year, month, day);
+  const inputDate = new Date(year, month, day);
 
-    // Check if the date is valid (e.g., not Feb 30, 2026)
-    if (inputDate.getFullYear() !== year ||
-        inputDate.getMonth() !== month ||
-        inputDate.getDate() !== day) {
-        return false;
-    }
+  if (inputDate.getFullYear() !== year ||
+      inputDate.getMonth() !== month ||
+      inputDate.getDate() !== day) {
+      return false;
+  }
 
-    // Get current date (start of today)
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-    // Compare dates
-    return inputDate > today;
-}
+  return inputDate > today;
+};
 
 
 //console.profile();

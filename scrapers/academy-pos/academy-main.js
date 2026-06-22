@@ -149,7 +149,7 @@ async function extractPostDetails (postLink, page) {
 };
 
 
-async function scrapeAllPages (startUrl, maxPages = 16) {
+async function scrapeAllPages (startUrl, maxPages = 10) {
 
 
     let browser;
@@ -310,7 +310,7 @@ async function academy () {
 
     const baseUrl = "https://academicpositions.com/jobs/position/phd?page=";
 
-    await scrapeAllPages(baseUrl, 16);
+    await scrapeAllPages(baseUrl, 8);
 
     await closeDatabase();
     console.log('returning to outer cron scope?...')

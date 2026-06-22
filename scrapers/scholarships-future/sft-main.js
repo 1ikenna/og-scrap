@@ -15,7 +15,7 @@ async function base_scraper () {
   try {
     await initializeDatabase();
     const baseUrl = "https://scholarshipsfuture.com/";
-    await sft_scrap(baseUrl, 10);
+    await sft_scrap(baseUrl, 1);
     await closeDatabase();
   } catch (error) {
     console.error(error.message)
@@ -23,7 +23,7 @@ async function base_scraper () {
 };
 
 
-async function sft_scrap (startUrl, maxPages = 10) {
+async function sft_scrap (startUrl, maxPages = 1) {
 
 
   let browser;

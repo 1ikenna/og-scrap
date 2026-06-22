@@ -50,10 +50,18 @@ async function runWithLock(fn, label) {
 
 // --- Cron Jobs Setup ---
 async function setupCronJobs() {
-  // 4:00 AM - First scrap of the day
+  // 1:00 AM - First scrap of the day
+    cron.schedule('0 1 * * *', async () => {
+    console.log('🌅 1:00 AM - Scraping new posts for scrap_predoc..');
+    await runWithLock(scrap_predoc, 'scrap_predoc');  if (isJobRunning===false) process.exit(1);
+  }, {
+    scheduled: true,
+    timezone: "Africa/Lagos"
+  });
+
   cron.schedule('0 3 * * *', async () => {
     console.log('🌅 3:00 AM - Scraping new scholar posts from scholarships-future..');
-    await runWithLock(base_scraper, 'base_scraper'); process.exit(1);
+    await runWithLock(base_scraper, 'base_scraper'); if (isJobRunning===false) process.exit(1);
   }, {
     scheduled: true,
     timezone: "Africa/Lagos"
@@ -62,7 +70,7 @@ async function setupCronJobs() {
   //// 10:00 AM - Second scrap of the day
   cron.schedule('0 10 * * *', async () => {
     console.log('🌅 10:00 AM - Scraping new scholar posts from jbs-ac..');
-    await runWithLock(get_jobs_ac_data, 'get_jobs_ac_data'); process.exit(1);
+    await runWithLock(get_jobs_ac_data, 'get_jobs_ac_data'); if (isJobRunning===false) process.exit(1);
   }, {
     scheduled: true,
     timezone: "Africa/Lagos"
@@ -70,15 +78,7 @@ async function setupCronJobs() {
 
   cron.schedule('0 14 * * *', async () => {
     console.log('🌅 2:00 PM - Scraping new scholar posts from academy-main..');
-    await runWithLock(academy, 'academy'); process.exit(1);
-  }, {
-    scheduled: true,
-    timezone: "Africa/Lagos"
-  });
-
-  cron.schedule('0 18 * * *', async () => {
-    console.log('🌅 6:00 PM - Scraping new scholar posts from scholar-aid..');
-    await runWithLock(sa_base_scraper, 'sa_base_scraper');  process.exit(1);
+    await runWithLock(academy, 'academy'); if (isJobRunning===false) process.exit(1);
   }, {
     scheduled: true,
     timezone: "Africa/Lagos"
@@ -86,11 +86,13 @@ async function setupCronJobs() {
 
   cron.schedule('0 22 * * *', async () => {
     console.log('🌅 10:00 PM - Scraping new scholar posts from scholar-aid..');
-    await runWithLock(scrap_predoc, 'scrap_predoc');  process.exit(1);
+    await runWithLock(sa_base_scraper, 'sa_base_scraper');  if (isJobRunning===false) process.exit(1);
   }, {
     scheduled: true,
     timezone: "Africa/Lagos"
   });
+
+
 
   console.log('📅 Daily Schedule:');
   console.log('   - 3:00 AM: First scrap');
