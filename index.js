@@ -52,15 +52,15 @@ async function runWithLock(fn, label) {
 async function setupCronJobs() {
   // 1:00 AM - First scrap of the day
     cron.schedule('0 1 * * *', async () => {
-    console.log('🌅 1:00 AM - Scraping new posts for scrap_predoc..');
-    await runWithLock(scrap_predoc, 'scrap_predoc');  if (isJobRunning===false) process.exit(1);
+    console.log('🌅 1:00 AM - Scholarship-aid scrapper running..');
+    await runWithLock(sa_base_scraper, 'sa_base_scraper');  if (isJobRunning===false) process.exit(1);
   }, {
     scheduled: true,
     timezone: "Africa/Lagos"
   });
 
   cron.schedule('0 3 * * *', async () => {
-    console.log('🌅 3:00 AM - Scraping new scholar posts from scholarships-future..');
+    console.log('🌅 3:00 AM - Sft scrapper running..');
     await runWithLock(base_scraper, 'base_scraper'); if (isJobRunning===false) process.exit(1);
   }, {
     scheduled: true,
@@ -69,7 +69,7 @@ async function setupCronJobs() {
 
   //// 10:00 AM - Second scrap of the day
   cron.schedule('0 10 * * *', async () => {
-    console.log('🌅 10:00 AM - Scraping new scholar posts from jbs-ac..');
+    console.log('🌅 10:00 AM - Jobs-ac scrapper running..');
     await runWithLock(get_jobs_ac_data, 'get_jobs_ac_data'); if (isJobRunning===false) process.exit(1);
   }, {
     scheduled: true,
@@ -77,7 +77,7 @@ async function setupCronJobs() {
   });
 
   cron.schedule('0 14 * * *', async () => {
-    console.log('🌅 2:00 PM - Scraping new scholar posts from academy-main..');
+    console.log('🌅 2:00 PM - academy scraper running..');
     await runWithLock(academy, 'academy'); if (isJobRunning===false) process.exit(1);
   }, {
     scheduled: true,
@@ -85,8 +85,8 @@ async function setupCronJobs() {
   });
 
   cron.schedule('0 22 * * *', async () => {
-    console.log('🌅 10:00 PM - Scraping new scholar posts from scholar-aid..');
-    await runWithLock(sa_base_scraper, 'sa_base_scraper');  if (isJobRunning===false) process.exit(1);
+    console.log('🌅 10:00 PM - predoc scrapper running..');
+    await runWithLock(scrap_predoc, 'scrap_predoc');  if (isJobRunning===false) process.exit(1); //scrap_predoc, 'scrap_predoc'
   }, {
     scheduled: true,
     timezone: "Africa/Lagos"
