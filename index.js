@@ -59,9 +59,10 @@ async function runWithLock(fn, label) {
 //sunday no scrap
 async function setupCronJobs() {
   // 1:00 AM - First scrap of the day
-    cron.schedule('52 16 * * *', async () => {
+    cron.schedule('0 1 * * *', async () => {
     console.log('🌅 1:00 AM - Scholarship-aid scrapper running..');
     await runWithLock(sa_base_scraper, 'sa_base_scraper');
+    process.exit(1);
   }, {
     scheduled: true,
     timezone: "Africa/Lagos"
@@ -70,6 +71,7 @@ async function setupCronJobs() {
   cron.schedule('0 5 * * *', async () => {
     console.log('🌅 5:00 AM - Sft scrapper running..');
     await runWithLock(base_scraper, 'base_scraper');
+    process.exit(1);
   }, {
     scheduled: true,
     timezone: "Africa/Lagos"
@@ -79,14 +81,16 @@ async function setupCronJobs() {
   cron.schedule('0 10 * * *', async () => {
     console.log('🌅 10:00 AM - Jobs-ac scrapper running..');
     await runWithLock(get_jobs_ac_data, 'get_jobs_ac_data');
+    process.exit(1);
   }, {
     scheduled: true,
     timezone: "Africa/Lagos"
   });
 
-  cron.schedule('0 16 * * *', async () => {
+  cron.schedule('0 14 * * *', async () => {
     console.log('🌅 2:00 PM - academy scraper running..');
     await runWithLock(academy, 'academy');
+    process.exit(1);
   }, {
     scheduled: true,
     timezone: "Africa/Lagos"
@@ -94,7 +98,8 @@ async function setupCronJobs() {
 
   cron.schedule('0 22 * * *', async () => {
     console.log('🌅 10:00 PM - predoc scrapper running..');
-    await runWithLock(scrap_predoc, 'scrap_predoc');   //scrap_predoc, 'scrap_predoc'
+    await runWithLock(scrap_predoc, 'scrap_predoc');
+    process.exit(1);  //scrap_predoc, 'scrap_predoc'
   }, {
     scheduled: true,
     timezone: "Africa/Lagos"
