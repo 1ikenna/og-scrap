@@ -142,6 +142,7 @@ async function sa_scrap(startUrl, maxPages = 5) {
           process.exit(0);
         } else {
           console.log('No new documents available to insert at this time..', result);
+          process.exit(0);
         }
         break;
       }
