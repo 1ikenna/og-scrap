@@ -139,6 +139,7 @@ async function sa_scrap(startUrl, maxPages = 5) {
         let result = await storePosts(ttLinks);
         if (result && result.success && result.inserted) {
           console.log(`successfully stored posts ..${result.inserted}\nDetails: \n`, result);
+          process.exit(0);
         } else {
           console.log('No new documents available to insert at this time..', result);
         }
@@ -152,9 +153,9 @@ async function sa_scrap(startUrl, maxPages = 5) {
     return;
 
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
     if (browser) await browser.close();
-    process.exit(1);
+    return;
   }
 }
 
@@ -246,11 +247,7 @@ async function extractLinkDetails(links, browser) {
 
     } catch (error) {
       console.error(`Error processing link ${links[i]}:`, error.message);
-    } finally {
-      // Ensure the tab closes even if the execution fails or times out
-      if (detailPage) {
-        await detailPage.close().catch(() => {});
-      }
+      return;
     }
   }
   return extracted_posts;
