@@ -59,7 +59,7 @@ async function runWithLock(fn, label) {
 //sunday no scrap
 async function setupCronJobs() {
   // 1:00 AM - First scrap of the day
-    cron.schedule('0 13 * * *', async () => {
+    cron.schedule('0 14 * * *', async () => {
     console.log('🌅 1:00 AM - Scholarship-aid scrapper running..');
     await runWithLock(sa_base_scraper, 'sa_base_scraper');  if (isJobRunning===false) process.exit(0);
   }, {

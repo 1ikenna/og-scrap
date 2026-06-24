@@ -166,7 +166,7 @@ async function extractLinkDetails(links, browser) {
     try {
       // Create a dedicated page for this specific iteration to protect lifecycle scopes
       detailPage = await browser.newPage();
-      detailPage.setDefaultNavigationTimeout(30000);
+      //detailPage.setDefaultNavigationTimeout(30000);
 
       // Intercept assets on the child page as well to preserve Render's RAM limits
       await detailPage.setRequestInterception(true);
