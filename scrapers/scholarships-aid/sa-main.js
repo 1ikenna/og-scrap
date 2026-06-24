@@ -168,7 +168,7 @@ async function extractLinkDetails(links, browser) {
     try {
       // Create a dedicated page for this specific iteration to protect lifecycle scopes
       detailPage = await browser.newPage();
-      //detailPage.setDefaultNavigationTimeout(30000);
+      detailPage.setDefaultNavigationTimeout(0);
 
       // Intercept assets on the child page as well to preserve Render's RAM limits
       await detailPage.setRequestInterception(true);
@@ -183,6 +183,7 @@ async function extractLinkDetails(links, browser) {
       console.log(`[${i + 1}/${links.length}] Extracting details from link: ${links[i]}`);
       await detailPage.goto(`${links[i]}`, {
         waitUntil: "domcontentloaded",
+        timeout: 0,
       });
 
       await detailPage.waitForSelector(".entry-title", {
@@ -245,10 +246,11 @@ async function extractLinkDetails(links, browser) {
       };
 
       extracted_posts.push(post_block);
-
+      await detailPage.close();
     } catch (error) {
       console.error(`Error processing link ${links[i]}:`, error.message);
-      return;
+      if (detailPage) await detailPage.close(); // clean up too
+      continue;
     }
   }
   return extracted_posts;
