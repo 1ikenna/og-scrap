@@ -185,7 +185,7 @@ async function extractLinkDetails(links, browser) {
 
       await detailPage.waitForSelector(".entry-title", {
         visible: true,
-        timeout: 15000,
+        timeout: 0,
       });
 
       let post_title = await detailPage.evaluate(() => {
