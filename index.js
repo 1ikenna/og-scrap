@@ -59,7 +59,7 @@ async function runWithLock(fn, label) {
 //sunday no scrap
 async function setupCronJobs() {
   // 1:00 AM - First scrap of the day
-    cron.schedule('36 16 * * *', async () => {
+    cron.schedule('52 16 * * *', async () => {
     console.log('🌅 1:00 AM - Scholarship-aid scrapper running..');
     await runWithLock(sa_base_scraper, 'sa_base_scraper');
   }, {
@@ -67,8 +67,8 @@ async function setupCronJobs() {
     timezone: "Africa/Lagos"
   });
 
-  cron.schedule('0 3 * * *', async () => {
-    console.log('🌅 3:00 AM - Sft scrapper running..');
+  cron.schedule('0 5 * * *', async () => {
+    console.log('🌅 5:00 AM - Sft scrapper running..');
     await runWithLock(base_scraper, 'base_scraper');
   }, {
     scheduled: true,

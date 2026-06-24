@@ -139,10 +139,10 @@ async function sa_scrap(startUrl, maxPages = 5) {
         let result = await storePosts(ttLinks);
         if (result && result.success && result.inserted) {
           console.log(`successfully stored posts ..${result.inserted}\nDetails: \n`, result);
-          process.exit(0);
+          //process.exit(0);
         } else {
           console.log('No new documents available to insert at this time..', result);
-          process.exit(0);
+          //process.exit(0);
         }
         break;
       }
