@@ -20,7 +20,7 @@ async function sa_base_scraper() {
   }
 }
 
-async function sa_scrap(startUrl, maxPages = 10) {
+async function sa_scrap(startUrl, maxPages = 5) {
   let browser;
 
   const launchOptions = {
