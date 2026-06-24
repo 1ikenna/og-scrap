@@ -13,7 +13,7 @@ async function sa_base_scraper() {
   try {
     await initializeDatabase();
     const baseUrl = "https://scholarshipsandaid.org/category/scholarships/";
-    await sa_scrap(baseUrl, 5);
+    await sa_scrap(baseUrl, 1);
     await closeDatabase();
   } catch (error) {
     console.error(error.message);
