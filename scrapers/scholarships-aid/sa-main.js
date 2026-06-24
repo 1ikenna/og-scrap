@@ -64,7 +64,7 @@ async function sa_scrap(startUrl, maxPages = 5) {
   try {
     page = await browser.newPage();
     // Use a reasonable timeout instead of 0 to avoid infinite hanging on Render free tier
-    page.setDefaultNavigationTimeout(30000);
+    page.setDefaultNavigationTimeout(0);
 
     // Block images, stylesheets, and fonts to save memory and bandwidth
     await page.setRequestInterception(true);
@@ -94,7 +94,7 @@ async function sa_scrap(startUrl, maxPages = 5) {
 
       await page.waitForSelector(".read-title", {
         visible: true,
-        timeout: 15000,
+        timeout: 0,
       });
 
       let links = await page.evaluate(() => {

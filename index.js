@@ -48,8 +48,15 @@ async function runWithLock(fn, label) {
   }
 };
 
-// --- Cron Jobs Setup ---
-//run only two scrappers per day
+// --- Cron Jobs Setup (time in gmt+1 -lagos/nigeria time) ---
+//run only two scrappers per day; the next day no scrap
+//monday run get_jobs_ac_data by 1am and academy by 11am
+//tuesday no scrap
+//wednesday run sa_base_scraper by 1am, base_scraper by 9am and scrap_predoc by 10pm
+//thursday no scrap
+//friday run get_jobs_ac_data by 1am and academy by 11am
+//saturday run sa_base_scraper by 1am, base_scraper by 9am and scrap_predoc by 10pm
+//sunday no scrap
 async function setupCronJobs() {
   // 1:00 AM - First scrap of the day
     cron.schedule('0 12 * * *', async () => {
